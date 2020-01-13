@@ -1,0 +1,22 @@
+import com.kmp_starter.data.Address;
+import kotlin.collections.List;
+
+CREATE TABLE users (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  address TEXT as Address NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+upsertUser:
+INSERT OR REPLACE INTO users (id, name, address, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?);
+
+selectAll:
+SELECT *
+FROM users;
+
+deleteAll:
+DELETE
+FROM users;

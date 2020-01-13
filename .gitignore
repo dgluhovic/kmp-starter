@@ -1,0 +1,14 @@
+.gradle
+local.properties
+.idea
+.DS_Store
+bin/
+gen/
+*.iml
+build/
+
+
+# ruby
+.ruby-version
+.bundle
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:padding="@dimen/margin_normal">
+
+    <TextView
+        android:id="@+id/searchResult_label1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Label1"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/searchResult_label2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Label2"
+        app:layout_constraintTop_toBottomOf="@id/searchResult_label1"/>
+
+    <TextView
+        android:id="@+id/searchResult_label3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Label2"
+        app:layout_constraintTop_toBottomOf="@+id/searchResult_label2"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

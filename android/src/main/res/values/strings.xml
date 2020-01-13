@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">KMP Starter</string>
+    <string name="next">Next</string>
+    <string name="aavatar">Add avatar</string>
+
+    <string name="request_permission">Please grant external storage and camera permissions to choose an avatar.</string>
+    <string name="register">Create account</string>
+    <string name="login">Login</string>
+    <string name="ok">OK</string>
+    <string name="register_accountExists">Account exists, please log in.</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="distance_miles">Distance (miles)</string>
+    <string name="search">Search</string>
+    <string name="distance_miles_format">%s miles</string>
+    <string name="logout">Logout</string>
+
+</resources>

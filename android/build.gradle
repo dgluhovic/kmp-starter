@@ -1,0 +1,116 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-multiplatform'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlinx-serialization'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+buildscript {
+    ext {
+        // AndroidX
+        app_compat_version = '1.1.0'
+        core_ktx_version = '1.1.0'
+        constraint_layout_version = '2.0.0-beta3'
+        navigation_version = '2.1.0'
+        recycler_view_version = '1.0.0'
+
+        // GP
+        gpCoreKitVersion = '0.5.0'
+        gpMvvmKitVersion = '0.9.1'
+        rxJavaVersion = '2.2.8'
+
+        // Picasso
+        picasso_version = '2.71828'
+
+        // LeakCanary
+        leak_canary_version = '2.0-beta-3'
+
+        // Android Debug Database
+        android_debug_database_version = '1.0.6'
+    }
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion = '29.0.2'
+    defaultConfig {
+        applicationId "com.kmp_starter.app"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+    }
+}
+
+kotlin {
+    targets.fromPreset(presets.android, 'android')
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    // Multi-platform module
+    implementation project(':core')
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+
+    // Serialization
+    //implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
+
+    // Kodein
+    implementation "org.kodein.di:kodein-di-core:$kodein_version"
+    implementation "org.kodein.di:kodein-di-erased:$kodein_version"
+
+    // GP
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+
+    // Android X
+    implementation "androidx.appcompat:appcompat:$app_compat_version"
+    implementation "androidx.core:core-ktx:$core_ktx_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+    implementation "androidx.recyclerview:recyclerview:$recycler_view_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.1.0" //TODO
+
+    // Picasso
+    implementation "com.squareup.picasso:picasso:$picasso_version"
+
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
+    implementation "io.github.reactivecircus.flowbinding:flowbinding-android:$flowbinding_version"
+
+    implementation 'com.github.jkwiecien:EasyImage:3.0.3'
+
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // LeakCanary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
+
+    // SQLDelight
+    implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
+
+    // Android Debug Database
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="register">Create account</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="address_hint">Street city zipcode (not displayed in app)</string>
+    <string name="search">Search</string>
+</resources>
