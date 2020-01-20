@@ -42,13 +42,8 @@ data class UserToken(
 )
 
 @Serializable
-data class SearchRequest(
-    val distanceMiles: Double
-)
-
-@Serializable
 data class SearchResponse(
-    val users: List<User>
+    val results: List<SearchResult>
 )
 
 @Serializable
@@ -57,3 +52,8 @@ data class LatLng(
     val longitude: Double = 0.0
 )
 
+@Serializable
+data class SearchResult(
+    val user: User,
+    val distanceMeters: Double
+)

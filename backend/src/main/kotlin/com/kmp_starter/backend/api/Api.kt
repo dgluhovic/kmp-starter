@@ -10,6 +10,7 @@ import io.ktor.auth.UserIdPrincipal
 import io.ktor.auth.authenticate
 import io.ktor.auth.principal
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
@@ -60,20 +61,13 @@ fun Routing.api(simpleJwt: SimpleJWT, log: Logger) {
     }
 
     authenticate {
-        //TODO: save date
-        post(Routes.SEARCH) {
-            val request = call.receive<SearchRequest>()
+        get(Routes.SEARCH) {
             val id = call.principal<UserIdPrincipal>()?.name
             id?.let {
-                val response = UserService.getFullUsersWithinRadius(it.toLong(), request.distanceMiles)
+                val response = UserService.getFullUsersWithinRadius(it.toLong(), call.parameters.distanceMeters)
                 call.respond(response)
             } ?: call.respond(HttpStatusCode.NotFound)
         }
-    }
-
-    get(Routes.SEARCH) {
-        val list = UserService.getFullUsersWithinRadius(call.parameters.get("user_id")!!.toLong(), call.parameters.get("distance")!!.toDouble())
-        call.respond(list)
     }
 }
 
@@ -82,3 +76,5 @@ private suspend fun PipelineContext<*, ApplicationCall>.user(): User? =
         val userId = it.name
         UserService.getFullUserById(userId.toLongOrNull() ?: 0)?.user()
     }
+
+private inline val Parameters?.distanceMeters: Double get() = this?.get(PARAM_DISTANCE_METERS)?.toDouble() ?: DEFAULT_DISTANCE_METERS

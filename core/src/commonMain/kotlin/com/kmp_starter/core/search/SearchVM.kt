@@ -24,30 +24,37 @@ class SearchVM(
     ): SearchState = when (lce) {
         is Lce.Content -> when (val result = lce.content) {
             is SearchResult.ScreenLoad -> currentState.copy(result.user)
-            is SearchResult.SearchResponse -> currentState.copy(items = result.items)
+            is SearchResult.SearchResponse -> currentState.copy(items = result.items).copyDistance(result.distanceMiles)
             else -> currentState //TODO
         }
         else -> currentState
     }
 
-    override fun Flow<Lce<out SearchResult>>.resultToEffects(): Flow<SearchEffect> = emptyFlow() //TODO
+    override fun Flow<Lce<out SearchResult>>.resultToEffects(): Flow<SearchEffect> =
+        ofType<Lce.Error<out SearchResult>>().flatMapConcat { flowOf(SearchEffect.Error(it.throwable)) }
 
     private fun Flow<SearchEvent.ScreenLoad>.onScreenLoad() = flatMapLatest {
-        userRepo.me()
-            .flatMapLatest { user ->
-                flowOf(
-                    flowOf(SearchResult.ScreenLoad(user)),
-                    searchFlow()
-                )
-            }.flattenMerge()
+        viewState.take(1)
+            .flatMapLatest {
+                it.me?.let { user ->
+                    flowOf(SearchResult.ScreenLoad(user))
+                } ?: userRepo.me()
+                        .flatMapLatest { user ->
+                            flowOf(
+                                flowOf(SearchResult.ScreenLoad(user)),
+                                searchFlow(it.distanceMiles)
+                            )
+                        }.flattenMerge()
+            }
     }.wrapWithLce()
 
     private fun Flow<SearchEvent.SearchClick>.onSearchClick() =
         flatMapLatest {
             searchFlow(it.distanceMiles)
-        }.wrapWithLce()
+                .wrapWithLce()
+        }
 
-    private fun searchFlow(distanceMiles: Double = DEFAULT_SEARCH_RADIUS_MILES) =
+    private fun searchFlow(distanceMiles: Double) =
         userRepo.search(distanceMiles)
             .flatMapLatest { results ->
                 viewState.take(1)
@@ -56,21 +63,17 @@ class SearchVM(
                             flowOf(
                                 SearchResult.SearchResponse(
                                     items = listOf(
-                                        SearchAdapterItem.Header,
+                                        SearchAdapterItem.Header(distanceMiles),
                                         *results.map {
-                                            SearchAdapterItem.SearchResult(
-                                                it, me.address.distanceToMiles(it.address))
+                                            SearchAdapterItem.SearchResult(it)
                                         }
-                                            .sortedBy { it.distanceMiles }
+                                            .sortedBy { it.result.distanceMeters }
                                             .toTypedArray()
-                                    )
+                                    ),
+                                    distanceMiles = distanceMiles
                                 )
                             )
                         } ?: emptyFlow()
                     }
             }
-
-
-    private fun Address.distanceToMiles(other: Address) =
-        distanceMeters(location, other.location) / 1609.34
 }

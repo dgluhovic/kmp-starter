@@ -1,6 +1,8 @@
 package com.kmp_starter.core.data
 
 
+import com.kmp_starter.data.METERS_PER_MILE
+import com.kmp_starter.data.SearchResult
 import com.kmp_starter.data.User
 import com.kmp_starter.data.UserRegistration
 import com.kmp_starter.data.UserToken
@@ -9,7 +11,9 @@ import io.ktor.client.features.logging.DEFAULT
 import io.ktor.client.features.logging.Logger
 import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
 const val DEFAULT_SEARCH_RADIUS_MILES = 10.0
 
@@ -35,9 +39,12 @@ class UserRepo(
     }
 
     fun search(
-        distance: Double = DEFAULT_SEARCH_RADIUS_MILES
-    ): Flow<List<User>>  = flow {
-        emit(api.search(distance).users)
+        distanceMiles: Double
+    ): Flow<List<SearchResult>>  = flow {
+        val response = api.search(distanceMiles * METERS_PER_MILE).results
+        emit(response)
+    }.catch {
+        throw it
     }
 
     fun me(): Flow<User>  = flow {

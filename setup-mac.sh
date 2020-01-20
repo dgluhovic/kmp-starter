@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. backend/.env
+source backend/.env
 
 brew install postgres
 brew install postgis

@@ -17,6 +17,7 @@ import com.kmp_starter.app.userinfo.inflate
 import com.kmp_starter.core.search.SearchAdapterItem
 import com.kmp_starter.core.search.SearchEvent
 import com.kmp_starter.core.userinfo.displayValue
+import com.kmp_starter.data.METERS_PER_MILE
 import kotlinx.android.synthetic.main.view_search_header.view.*
 import kotlinx.android.synthetic.main.view_search_result.view.*
 import kotlinx.coroutines.channels.Channel
@@ -25,7 +26,7 @@ internal class SearchDiffer : DiffUtil.ItemCallback<SearchAdapterItem>() {
     override fun areItemsTheSame(
         oldItem: SearchAdapterItem,
         newItem: SearchAdapterItem
-    ): Boolean = oldItem == newItem
+    ): Boolean = oldItem == newItem || newItem is SearchAdapterItem.Header
 
     override fun areContentsTheSame(
         oldItem: SearchAdapterItem,
@@ -74,6 +75,11 @@ private class HeaderVH(view: View, val relay: Channel<SearchEvent>)
                 val distance = searchHeader_input.text.toString().toDoubleOrNull() ?: 0.0
                 relay.offer(SearchEvent.SearchClick(distance))
             }
+            searchHeader_input.apply {
+                setText(item.distanceMiles.format())
+                setSelection(text.length)
+                requestFocus()
+            }
         }
     }
 
@@ -88,10 +94,10 @@ private class SearchResultVH(view: View, val relay: Channel<SearchEvent>)
 
     override fun bind(item: SearchAdapterItem.SearchResult) {
         itemView.apply {
-            searchResult_label1.text = item.user.name
-            searchResult_label2.text = item.user.address.displayValue
-            searchResult_label3.text = resources.getString(
-                R.string.distance_miles_format, item.distanceMiles.format())
+            searchResult_label1.text = item.result.user.name
+            searchResult_label2.text = item.result.user.address.displayValue
+            searchResult_label3.text = resources.getString(R.string.distance_miles_format,
+                (item.result.distanceMeters / METERS_PER_MILE).format())
         }
     }
 
@@ -101,4 +107,8 @@ private class SearchResultVH(view: View, val relay: Channel<SearchEvent>)
     }
 }
 
-fun Double.format(digits: Int = 2) = "%.${digits}f".format(this)
+private fun Double.format() = if (this == Math.floor(this)) {
+    "%.0f"
+} else {
+    "%.2f"
+}.format(this)

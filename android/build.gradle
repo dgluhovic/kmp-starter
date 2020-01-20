@@ -14,14 +14,6 @@ buildscript {
         navigation_version = '2.1.0'
         recycler_view_version = '1.0.0'
 
-        // GP
-        gpCoreKitVersion = '0.5.0'
-        gpMvvmKitVersion = '0.9.1'
-        rxJavaVersion = '2.2.8'
-
-        // Picasso
-        picasso_version = '2.71828'
-
         // LeakCanary
         leak_canary_version = '2.0-beta-3'
 
@@ -76,28 +68,16 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 
-    // Serialization
-    //implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
-
     // Kodein
     implementation "org.kodein.di:kodein-di-core:$kodein_version"
     implementation "org.kodein.di:kodein-di-erased:$kodein_version"
-
-    // GP
-    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
 
     // Android X
     implementation "androidx.appcompat:appcompat:$app_compat_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
     implementation "androidx.recyclerview:recyclerview:$recycler_view_version"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.1.0" //TODO
-
-    // Picasso
-    implementation "com.squareup.picasso:picasso:$picasso_version"
-
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.1.0"
 
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:$flowbinding_version"
 

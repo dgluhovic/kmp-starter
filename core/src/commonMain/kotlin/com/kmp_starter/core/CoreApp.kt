@@ -56,8 +56,11 @@ class CoreApp(
     }
 }
 
-lateinit var app: CoreApp
-    private set
+//TODO
+//lateinit var app: CoreApp
+//    private set
+private lateinit var _app: CoreApp
+val app:CoreApp get() = _app
 
 /**
  * Used to initialize the singleton [CoreApp] from the platform specific application containers.
@@ -70,9 +73,9 @@ fun initializeCoreApp(
     sqlDriver: SqlDriver,
     configuration: Configuration
 ) {
-    if (!::app.isInitialized) {
+    if (!::_app.isInitialized) {
         freeze(sleeper)
-        app =
+        _app =
             CoreApp(
                 settings,
                 geocoder,

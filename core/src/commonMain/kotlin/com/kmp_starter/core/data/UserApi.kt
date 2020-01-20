@@ -38,11 +38,10 @@ class UserApi(
         apiUrl(Routes.ME)
     }
 
-    suspend fun search(distance: Double) = client.post<SearchResponse> {
+    suspend fun search(distanceMeters: Double) = client.get<SearchResponse> {
         url(hostUrl)
         apiUrl(Routes.SEARCH)
-        json()
-        body = SearchRequest(distanceMiles = distance)
+        parameter(PARAM_DISTANCE_METERS, distanceMeters)
     }
 
     private fun HttpRequestBuilder.apiUrl(path: String? = null) {

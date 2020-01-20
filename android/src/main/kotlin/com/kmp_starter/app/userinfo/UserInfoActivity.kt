@@ -2,6 +2,8 @@ package com.kmp_starter.app.userinfo
 
 import android.Manifest
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -104,7 +106,6 @@ class UserInfoActivity : AppCompatActivity(), CoroutineScope by MainScope() {
           .show().let {  }
       }
       is UserInfoEffect.ConflictError -> {
-        //TODO
         Toast.makeText(this, R.string.register_accountExists, Toast.LENGTH_LONG).show()
         startActivity(Intent(this, UserInfoActivity::class.java)
           .withUserInfoMode(UserInfoMode.LOGIN))
@@ -113,7 +114,9 @@ class UserInfoActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         startActivity(Intent(this, UserInfoActivity::class.java)
           .withUserInfoMode(UserInfoMode.LOGIN))
       }
-      is UserInfoEffect.ShowHome -> startActivity(Intent(this, SearchActivity::class.java))
+      is UserInfoEffect.ShowHome -> startActivity(
+        Intent(this, SearchActivity::class.java)
+          .setFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
     }
 
 

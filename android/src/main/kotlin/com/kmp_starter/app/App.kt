@@ -24,8 +24,6 @@ class App : Application(),
 
     val geocoder by lazy { android.location.Geocoder(this) }
 
-    //private val repo: UserRepo by  app.kodein.instance()
-
     override fun onCreate() {
         super.onCreate()
         initializeCoreApp(

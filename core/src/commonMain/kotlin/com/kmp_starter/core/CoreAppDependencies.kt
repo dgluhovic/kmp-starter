@@ -49,9 +49,7 @@ fun httpClient(
     }
 
     install(JsonFeature) {
-        serializer = KotlinxSerializer(Json(JsonConfiguration(strictMode = false))).apply {
-            setMapper(UserRegistration::class, UserRegistration.serializer())
-        }
+        serializer = KotlinxSerializer(Json(JsonConfiguration(strictMode = false)))
     }
     install(Logging) {
         logger = Logger.DEFAULT

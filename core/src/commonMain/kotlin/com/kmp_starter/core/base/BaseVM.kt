@@ -18,7 +18,7 @@ abstract class BaseVM<EVENT, RESULT, STATE, EFFECT>(
     private val initialState: STATE
 ) : VM(), CoroutineScope {
 
-    private val channel = Channel<EVENT>()
+    private val channel = BroadcastChannel<EVENT>(Channel.BUFFERED)
     private val stateChannel = ConflatedBroadcastChannel<Pair<Lce<out RESULT>, STATE>>()
 
     val viewState: Flow<STATE>
@@ -41,7 +41,6 @@ abstract class BaseVM<EVENT, RESULT, STATE, EFFECT>(
 
         job = launch {
             channel
-                .broadcast()
                 .asFlow()
                 .eventToResults()
                 .resultsWithState()

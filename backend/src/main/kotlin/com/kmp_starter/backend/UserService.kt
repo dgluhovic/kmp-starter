@@ -59,8 +59,8 @@ object UserService {
         getFullUser { Users.id.eq(id) }
     }
 
-    suspend fun getFullUsersWithinRadius(userId: Long, distance: Double) =
-        RawSql.UsersWithinDistance(userId, distance)?.let {
+    suspend fun getFullUsersWithinRadius(userId: Long, distanceMeters: Double) =
+        RawSql.UsersWithinDistance(userId, distanceMeters)?.let {
             SearchResponse(execAndMap(it.stmt, it.transform))
         }
 
