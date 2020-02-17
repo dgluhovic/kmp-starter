@@ -1,2 +1,2 @@
 enableFeaturePreview('GRADLE_METADATA')
-include ':data', ':core', ':android', ':backend', ':ios'
+include ':core', ':android', ':backend', ':ios'

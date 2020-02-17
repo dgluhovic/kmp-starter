@@ -23,27 +23,69 @@ android {
 }
 
 kotlin {
-    targets {
-        fromPreset(presets.android, 'android')
-
-        def buildForDevice = project.findProperty("device")?.toBoolean() ?: false
-        def iosPreset = (buildForDevice) ? presets.iosArm64 : presets.iosX64
-        fromPreset(iosPreset, 'ios') {
-            binaries {
-                framework {
-                    // Disable bitcode embedding for the simulator build.
-                    if (!buildForDevice) {
-                        embedBitcode("disable")
-                    }
-                }
+    jvm()
+    android()
+/*    def onPhone = System.getenv('SDK_NAME')?.startsWith("iphoneos")
+    if (onPhone) {
+        iosArm64("ios")
+    } else {
+        iosX64("ios")
+    }*/
+    ios {
+        binaries {
+            framework {
+                baseName = "kmp-starter"
             }
         }
     }
 
     sourceSets {
-        androidMain {
+        commonMain {
             dependencies {
-                //api project(':data')
+                // Kotlin
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+
+                // Serialize
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
+            }
+        }
+        jvmMain {
+            dependencies {
+                // Kotlin
+                implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+                // Serialize
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
+
+            }
+        }
+        commonClientMain {
+            dependsOn commonMain
+            dependencies {
+                // Coroutines
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+
+                // Kodein
+                implementation "org.kodein.di:kodein-di-core:$kodein_version"
+                implementation "org.kodein.di:kodein-di-erased:$kodein_version"
+
+                // Ktor
+                implementation "io.ktor:ktor-client-auth:$ktor_version"
+                implementation "io.ktor:ktor-client-core:$ktor_version"
+                implementation "io.ktor:ktor-client-json:$ktor_version"
+                implementation "io.ktor:ktor-client-logging:$ktor_version"
+                implementation "io.ktor:ktor-client-serialization:$ktor_version"
+
+                // SQLDelight
+                implementation "com.squareup.sqldelight:runtime:$sqldelight_version"
+
+                api "com.russhwolf:multiplatform-settings:0.5"
+                api "dev.icerock.moko:resources:$moko_version"
+            }
+        }
+        androidMain {
+            dependsOn commonClientMain
+            dependencies {
                 // Kotlin
                 implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
                 implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -67,13 +109,12 @@ kotlin {
                 // SQLDelight
                 implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
 
-                implementation "androidx.lifecycle:lifecycle-viewmodel:2.1.0"
+                implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
             }
         }
         iosMain {
+            dependsOn commonClientMain
             dependencies {
-                //implementation project(':data')
-
                 // Coroutines
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$coroutines_version"
 
@@ -92,38 +133,7 @@ kotlin {
                 implementation "com.squareup.sqldelight:ios-driver:$sqldelight_version"
             }
         }
-        commonMain {
-            dependencies {
-                api "com.kmp_starter.data:data:0.0.1"
-
-                // Kotlin
-                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
-
-                // Coroutines
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
-
-                // Kodein
-                implementation "org.kodein.di:kodein-di-core:$kodein_version"
-                implementation "org.kodein.di:kodein-di-erased:$kodein_version"
-
-                // Ktor
-                implementation "io.ktor:ktor-client-auth:$ktor_version"
-                implementation "io.ktor:ktor-client-core:$ktor_version"
-                implementation "io.ktor:ktor-client-json:$ktor_version"
-                implementation "io.ktor:ktor-client-logging:$ktor_version"
-                implementation "io.ktor:ktor-client-serialization:$ktor_version"
-
-                // Serialize
-                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
-
-                // SQLDelight
-                implementation "com.squareup.sqldelight:runtime:$sqldelight_version"
-
-                api "com.russhwolf:multiplatform-settings:0.5"
-                api "dev.icerock.moko:resources:$moko_version"
-            }
-        }
-        commonTest {
+        commonClientTest {
             dependencies {
                 implementation "org.jetbrains.kotlin:kotlin-test-common"
                 implementation "org.jetbrains.kotlin:kotlin-test-annotations-common"
@@ -132,6 +142,7 @@ kotlin {
             }
         }
         androidTest {
+            dependsOn commonClientTest
             dependencies {
                 implementation "junit:junit:4.12"
                 implementation "org.jetbrains.kotlin:kotlin-test"
@@ -162,6 +173,7 @@ sqldelight {
 
 multiplatformResources {
     multiplatformResourcesPackage = "com.kmp_starter.core"
+    multiplatformResourcesSourceSet = "commonClientMain"
 }
 
 task copyFramework {
